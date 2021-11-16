@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const db = require('../models');
+const db = require('../db/connection');
 
 // BASE ROUTE - /api/articles
 // Actual route - GET /api/articles
