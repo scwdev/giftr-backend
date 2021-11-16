@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const GroupSchema = new Schema({
     groupName: {type:String, required:true, unique:true},
-    users: {type:[String], required:true}
+    password: {type:String, required:true},
+    members: [String]
 })
 
 const Group = mongoose.model('Group', GroupSchema);
