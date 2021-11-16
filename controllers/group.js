@@ -15,7 +15,6 @@ router.post("/signup", async (req, res) => {
       req.body.password = await bcrypt.hash(req.body.password, 10);
       // create a new group
       const group = await Group.create(req.body);
-      console.log("ding")
       // send new group as response
       res.json(group);
     } catch (error) {
@@ -23,12 +22,11 @@ router.post("/signup", async (req, res) => {
     }
   });
 
-
 // Login route to verify a group and get a token
 router.post("/login", async (req, res) => {
     try {
       // check if the group exists
-      const group = await Group.findOne({ grouName: req.body.groupName });
+      const group = await Group.findOne({ groupName: req.body.groupName });
       if (group) {
         //check if password matches
         const result = await bcrypt.compare(req.body.password, group.password);
