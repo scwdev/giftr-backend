@@ -1,9 +1,18 @@
 const router = require('express').Router();
 const db = require('../db/connection');
 
-// BASE ROUTE - /api/articles
-// Actual route - GET /api/articles
-//Return data for all articles
+
+// group login
+// un, pwHash, check, errors, generate jwt
+
+
+// group wishlist get
+// find by groupId
+// CRUD routes
+
+
+
+
 
 router.get('/', (req, res) => {
   db.Article.find({}, (err, foundArticles) => {
