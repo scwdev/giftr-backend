@@ -29,6 +29,7 @@ router.get("/:id", isLoggedIn, async (req, res) => {
 // create Route with isLoggedIn middleware
 router.post("/", isLoggedIn, async (req, res) => {
   const { groupName } = req.group; // get groupName from req.group property created by isLoggedIn middleware
+  // console.log(groupName)
   req.body.groupName = groupName; // add groupName property to req.body
   //create new Item and send it in response
   res.json(

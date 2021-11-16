@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
         const result = await bcrypt.compare(req.body.password, group.password);
         if (result) {
           // sign token and send it in response
-          const token = await jwt.sign({ groupName: group.userName }, SECRET);
+          const token = await jwt.sign({ groupName: group.groupName }, SECRET);
           res.json({ token });
         } else {
           res.status(400).json({ error: "password doesn't match" });
