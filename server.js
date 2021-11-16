@@ -1,4 +1,3 @@
-/////////////Newimports///////////////
 require("dotenv").config()
 require('./db/connection')
 const express = require("express")
@@ -10,30 +9,23 @@ const cors = require("cors")
 const PORT = process.env.PORT || 4000 
 const app = express();
 const rowdyResults = rowdy.begin(app);
-///////////End New Imports/////////////////////////////
 
-/////////////////New Middleware///////////////
+// Middleware
 app.use(cors())
 app.use(morgan('dev'))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-// TODO add auth middleware
-// const checkJwt = require('./middleware/checkJwt')
-
-
 // Controllers
-
-// TODO rename controller & models
-const articlesController = require("./controllers/articlesController");
-
-app.use('/articles',  require('./controllers/articlesController')) //used to have checkJwt, after '/articles'
-// app.use('/auth', require('./controllers/auth'))
+const groupRouter = require("./controllers/group");
+const itemRouter = require("./controllers/item")
 
 // Routes
 app.get('/', (req, res) => {
     res.json({ msg: 'Hello world!' })
 })
+app.use('/group', groupRouter)
+app.use('/item', itemRouter)
 
 // Start the server
 app.listen(PORT, () => {

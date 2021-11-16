@@ -12,7 +12,7 @@ const isLoggedIn = async (req, res, next) => {
         const payload = await jwt.verify(token, process.env.SECRET);
         if (payload) {
           // store user data in request object
-          req.user = payload;
+          req.group = payload;
           next();
         } else {
           res.status(400).json({ error: "token verification failed" });

@@ -1,70 +1,49 @@
 const router = require('express').Router();
 const db = require('../db/connection');
+require("dotenv").config();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const {SECRET = "secret"} = process.env;
+
+const User = require("../models/Group");
 
 
-// group login
-// un, pwHash, check, errors, generate jwt
-
-
-// group wishlist get
-// find by groupId
-// CRUD routes
-
-
-
-
-
-router.get('/', (req, res) => {
-  db.Article.find({}, (err, foundArticles) => {
-    if (err) return console.log(err);
-    res.json(foundArticles);
+// SIGN UP route to create a new group
+router.post("/signup", async (req, res) => {
+    try {
+      // hash the password
+      req.body.password = await bcrypt.hash(req.body.password, 10);
+      // create a new group
+      const group = await Group.create(req.body);
+      // send new group as response
+      res.json(group);
+    } catch (error) {
+      res.status(400).json({ error });
+    }
   });
-});
 
-// actual route - GET /api/articles/:id
-router.get('/:id', (req, res) => {
-  db.Article.findById(req.params.id, (err, foundArticle) => {
-      if (err) return console.log(err);
-    res.json(foundArticle);
+  
+// Login route to verify a group and get a token
+router.post("/login", async (req, res) => {
+    try {
+      // check if the group exists
+      const group = await Group.findOne({ grouName: req.body.groupName });
+      if (group) {
+        //check if password matches
+        const result = await bcrypt.compare(req.body.password, group.password);
+        if (result) {
+          // sign token and send it in response
+          const token = await jwt.sign({ groupName: group.userName }, SECRET);
+          res.json({ token });
+        } else {
+          res.status(400).json({ error: "password doesn't match" });
+        }
+      } else {
+        res.status(400).json({ error: "Group doesn't exist" });
+      }
+    } catch (error) {
+      res.status(400).json({ error });
+    }
   });
-});
-
-// actual route - POST /api/articles
-router.post('/', (req, res) => {
-  const newArticle = {
-    title: req.body.title,
-    content: req.body.content,
-    image: req.body.image ? req.body.image : req.body.imageupload
-  }
-  db.Article.create(newArticle, (err, savedArticle) => {
-    console.log(newArticle)  
-    console.log('hello from post')
-    if (err) return console.log(err);
-    
-    res.json(savedArticle);
-  });
-});
-
-// actual route - PUT /api/articles/:id
-router.put('/:id', (req, res) => {
-  db.Article.findByIdAndUpdate(
-    req.params.id, // finds the Article with id passed in from URL
-    req.body, // passes in data to update a Article from the req.body
-    {new: true}, // We want to updated Article returned in the callback
-    (err, updatedArticle) => { // function called after update completes
-      if (err) return console.log(err);
-      
-      res.json(updatedArticle);
-    });
-});
-
-// actual route - DELETE /api/articles/:id
-router.delete('/:id', (req, res) => {
-  console.log('delete route')
-  db.Article.findByIdAndDelete(req.params.id, (err, deletedArticle) => {
-    if (err) return console.log(err);
-    res.json({ messaage:'Successful deletion' });
-  });
-});
 
 module.exports = router;
