@@ -13,7 +13,3 @@ db.once('open', () => {
 db.on('error', err => {
     console.error("Could not connect to Mongo DB!",err)
 })
-module.exports = {
-  Article: require ('../models/Article')
-//   User: require('./User')
-};
