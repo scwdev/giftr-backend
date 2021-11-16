@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {SECRET = "secret"} = process.env;
 
-const User = require("../models/Group");
+const Group = require("../models/Group");
 
 
 // SIGN UP route to create a new group
@@ -15,6 +15,7 @@ router.post("/signup", async (req, res) => {
       req.body.password = await bcrypt.hash(req.body.password, 10);
       // create a new group
       const group = await Group.create(req.body);
+      console.log("ding")
       // send new group as response
       res.json(group);
     } catch (error) {
@@ -22,7 +23,7 @@ router.post("/signup", async (req, res) => {
     }
   });
 
-  
+
 // Login route to verify a group and get a token
 router.post("/login", async (req, res) => {
     try {
