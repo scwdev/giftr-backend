@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./db/connection");
 const express = require("express");
+
 const rowdy = require("rowdy-logger");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -10,8 +11,22 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 const rowdyResults = rowdy.begin(app);
 
+// Cors
+
+const whitelist = ["http://localhost:3000", "https://giftr-back.herokuapp.com"];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
+
 // Middleware
-app.use(cors());
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

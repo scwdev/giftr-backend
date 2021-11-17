@@ -5,13 +5,14 @@ const { isLoggedIn } = require("./jwtMiddleware"); // import isLoggedIn custom m
 const router = Router();
 
 // Index Route with isLoggedIn middleware
-router.get("/", isLoggedIn, async (req, res) => {
-  const { groupName } = req.group;
-  res.json(
-    await Item.find({ groupName }).catch((error) =>
-      res.status(400).json({ error })
-    )
-  );
+router.get("/", async (req, res, next) => {
+  // const { groupName } = req.group;
+  try {
+    const foundItems = Item.find();
+    res.status(200).json(foundItems);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // Show Route with isLoggedIn middleware
@@ -27,16 +28,13 @@ router.get("/:id", isLoggedIn, async (req, res) => {
 });
 
 // create Route with isLoggedIn middleware
-router.post("/", isLoggedIn, async (req, res) => {
-  const { groupName } = req.group; // get groupName from req.group property created by isLoggedIn middleware
-  // console.log(groupName)
-  req.body.groupName = groupName; // add groupName property to req.body
-  //create new Item and send it in response
-  res.json(
-    await Item.create(req.body).catch((error) =>
-      res.status(400).json({ error })
-    )
-  );
+router.post("/", async (req, res) => {
+  try {
+    const item = await Item.create(req.body);
+    res.status(200).json(item);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 // update Route with isLoggedIn middleware
@@ -53,15 +51,16 @@ router.put("/:id", isLoggedIn, async (req, res) => {
 });
 
 // update Route with isLoggedIn middleware
-router.delete("/:id", isLoggedIn, async (req, res) => {
-  const { groupName } = req.group; // get groupName from req.group property created by isLoggedIn middleware
-  const _id = req.params.id;
+router.delete("/", async (req, res) => {
+  // const { groupName } = req.group; // get groupName from req.group property created by isLoggedIn middleware
+  // const _id = req.params.id;
   //remove Item with same id if belongs to logged in group
-  res.json(
-    await Item.remove({ groupName, _id }).catch((error) =>
-      res.status(400).json({ error })
-    )
-  );
+  try {
+    const deletedStuff = await Item.deleteMany({});
+    res.status(200).json(deletedStuff);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 module.exports = router;
