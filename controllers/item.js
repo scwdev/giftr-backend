@@ -46,9 +46,9 @@ router.put("/:id", isLoggedIn, async (req, res) => {
   const _id = req.params.id;
   //update Item with same id if belongs to logged in group
   res.json(
-    await Item.updateOne({ groupName, _id }, req.body, { new: true }).catch(
-      (error) => res.status(400).json({ error })
-    )
+    await Item.updateOne({ groupName, _id }, req.body, {
+      new: true,
+    }).catch((error) => res.status(400).json({ error }))
   );
 });
 
@@ -64,4 +64,4 @@ router.delete("/:id", isLoggedIn, async (req, res) => {
   );
 });
 
-module.exports = router
+module.exports = router;
